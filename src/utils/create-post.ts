@@ -1,4 +1,4 @@
-interface ICreatePost {
+export interface ICreatePost {
   title: string
   body: string
 }

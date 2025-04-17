@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { type FormEvent, useState } from 'react'
-import { createPost } from '../utils/create-post'
+import { createPost, type ICreatePost } from '../utils/create-post'
+import type { IPosts } from '../utils/fetch-posts'
 
 export const CreatePost = () => {
   const [title, setTitle] = useState('')
@@ -12,6 +13,18 @@ export const CreatePost = () => {
       queryClient.invalidateQueries({
         queryKey: ['posts'],
       })
+    },
+    onMutate: async (newPost: ICreatePost) => {
+      await queryClient.cancelQueries({
+        queryKey: ['posts'],
+      })
+      const previousPosts = queryClient.getQueryData(['posts'])
+      queryClient.setQueryData(['posts'], (old: IPosts[]) => [
+        ...old,
+        { id: Date.now(), ...newPost },
+      ])
+
+      return { previousPosts }
     },
   })
 
