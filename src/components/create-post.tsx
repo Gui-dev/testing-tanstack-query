@@ -26,6 +26,9 @@ export const CreatePost = () => {
 
       return { previousPosts }
     },
+    onError: (err, newPost: ICreatePost, context) => {
+      queryClient.setQueryData(['posts'], context?.previousPosts)
+    },
   })
 
   const handleCreatePost = (event: FormEvent<HTMLFormElement>) => {
